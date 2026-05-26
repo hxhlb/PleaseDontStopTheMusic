@@ -1,0 +1,9 @@
+Package: com.mikey820.audiomix
+Name: AudioMix (Rootful)
+Version: 1.4.0
+Architecture: iphoneos-arm
+Description: Prevent apps (e.g. Roblox) from pausing your background music — rootful variant
+Maintainer: mikey820 <mikey820@users.noreply.github.com>
+Author: mikey820
+Section: Tweaks
+Depends: mobilesubstrate (>= 0.9.5000), firmware (>= 14.0)
