@@ -1,10 +1,16 @@
 #import <AVFoundation/AVFoundation.h>
 
+static BOOL isInterruptive(NSString *cat) {
+    return [cat isEqualToString:@"AVAudioSessionCategoryPlayback"]
+        || [cat isEqualToString:@"AVAudioSessionCategorySoloAmbient"]
+        || [cat isEqualToString:@"AVAudioSessionCategoryPlayAndRecord"]
+        || [cat isEqualToString:@"AVAudioSessionCategoryRecord"];
+}
+
 %hook AVAudioSession
 
 - (BOOL)setCategory:(NSString *)category error:(NSError **)outError {
-    if ([category isEqualToString:@"AVAudioSessionCategoryPlayback"]
-     || [category isEqualToString:@"AVAudioSessionCategorySoloAmbient"]) {
+    if (isInterruptive(category)) {
         return %orig(@"AVAudioSessionCategoryAmbient", outError);
     }
     return %orig;
@@ -18,8 +24,34 @@
     return %orig(category, options | AVAudioSessionCategoryOptionMixWithOthers, outError);
 }
 
+- (BOOL)setActive:(BOOL)active error:(NSError **)outError {
+    if (active) {
+        NSString *cur = [self category];
+        if (isInterruptive(cur)) {
+            [self setCategory:@"AVAudioSessionCategoryAmbient"
+                         mode:AVAudioSessionModeDefault
+                      options:AVAudioSessionCategoryOptionMixWithOthers
+                        error:nil];
+        }
+    }
+    return %orig;
+}
+
+- (BOOL)setActive:(BOOL)active withOptions:(AVAudioSessionSetActiveOptions)options error:(NSError **)outError {
+    if (active) {
+        NSString *cur = [self category];
+        if (isInterruptive(cur)) {
+            [self setCategory:@"AVAudioSessionCategoryAmbient"
+                         mode:AVAudioSessionModeDefault
+                      options:AVAudioSessionCategoryOptionMixWithOthers
+                        error:nil];
+        }
+    }
+    return %orig;
+}
+
 %end
 
 %ctor {
-    NSLog(@"AudioMix: loaded — Apps can no longer silence your background audio.");
+    NSLog(@"[AudioMix] loaded");
 }
