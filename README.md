@@ -2,6 +2,22 @@
 
 An iOS tweak that allows multiple audio sources to play simultaneously by preventing audio session interruptions.
 
+## ❤️ Support the Project
+
+If you find this project useful and would like to support development, donations are appreciated.
+
+### Base (Recommended)
+**Network:** Base  
+**Address:** `0x3a938bebeaFEbE057F13e4B14d250CBdcEb68B43`
+
+Supports:
+- ETH (Base)
+- USDC (Base)
+
+Please double-check that you're sending on the **Base** network.
+
+Thank you for your support!
+
 ---
 
 ## Overview
